@@ -66,9 +66,6 @@ codemate/
 │
 └── assets/ # (Optional) For icons or UI enhancements
 
-yaml
-Copy
-Edit
 
 ---
 
