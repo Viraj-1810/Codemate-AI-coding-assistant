@@ -1,4 +1,5 @@
 # 🤖 CodeMate: Your AI Coding Assistant
+Built by **Viraj Gupta**
 
 CodeMate is a VS Code-style AI coding assistant powered by **Groq's blazing-fast LLaMA 3 model** using **LangChain**. It can:
 
