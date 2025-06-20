@@ -1,40 +1,53 @@
-# 🧠 Codemate – Your AI Coding Assistant
+# 🤖 CodeMate: Your AI Coding Assistant
 
-Codemate is a blazing-fast AI coding assistant built with [Groq](https://groq.com/) + [LangChain](https://www.langchain.com/) and a friendly [Streamlit](https://streamlit.io/) UI. It helps you write, debug, explain, and improve code — all while remembering your conversation.
+CodeMate is a VS Code-style AI coding assistant powered by **Groq's blazing-fast LLaMA 3 model** using **LangChain**. It can:
+
+- Answer programming questions
+- Explain and refactor code
+- Debug errors
+- Maintain multi-turn conversations with memory
+- Provide secure coding and best practice suggestions
+
+Built for developers who want fast, context-aware help without leaving their IDE!
 
 ---
 
 ## 🚀 Features
 
 ✅ **Answer Coding Questions**  
-→ “What’s the difference between a list and tuple in Python?”
+Ask things like:
+- “How do I write a class in Python?”
+- “What is the difference between list and tuple?”
 
 ✅ **Explain Code Snippets**  
-→ Paste code and get clear, step-by-step explanations.
+Paste code and get a step-by-step explanation in plain English.
 
-✅ **Refactor / Optimize Code**  
-→ Make your code cleaner, faster, and easier to read.
+✅ **Refactor & Optimize Code**  
+Ask:
+- “Can you make this more readable?”
+- “Optimize this for performance.”
 
-✅ **Debug Faulty Logic**  
-→ Paste buggy code, get fixed versions with reasoning.
+✅ **Debug Faulty Code**  
+Ask:
+- “Why is this not working?”
+- “Fix the bug in this snippet.”
 
-✅ **Chat Memory**  
-→ Understands multi-turn conversations and remembers context.
+✅ **Enforce Best Practices**  
+Get recommendations for:
+- Clean code
+- Pythonic syntax
+- Secure web coding practices
 
-✅ **Chat History UI (Collapsible Sidebar)**  
-→ View and toggle previous chats for easy navigation.
+✅ **Chat Memory Support**  
+- Maintains context across multiple messages.
+- Supports follow-up questions in natural conversation.
 
-✅ **Groq-powered LLaMA 3**  
-→ Super fast & context-aware answers using the latest open-source LLMs.
+✅ **Groq + LangChain + Streamlit**  
+- LLaMA 3 8B for superior code reasoning  
+- Groq for lightning-fast responses  
+- LangChain for chaining logic & memory  
+- Streamlit for clean, responsive UI  
 
 ---
 
-## 🛠️ Tech Stack
-
-- 🧠 **Groq API** (LLaMA 3 8B)
-- 🔗 **LangChain** (with memory support)
-- 💬 **Streamlit** for UI
-- 🗃️ Python 3.10+
-
----
 
