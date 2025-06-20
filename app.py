@@ -1,25 +1,21 @@
 import streamlit as st
 from chains.chat_chain import chat_with_bot
 
-# App title and layout
+# App config
 st.set_page_config(page_title="CodeMate Copilot", page_icon="🤖", layout="wide")
 st.title("💻 CodeMate: Your AI Coding Assistant")
 
-# Secure Groq API Key (from secrets)
-groq_api_key = st.secrets["GROQ_API_KEY"]
-
-# Initialize chat history and visibility toggle
+# Initialize chat history and toggle state
 if "chat_history" not in st.session_state:
     st.session_state.chat_history = []
+
 if "show_history" not in st.session_state:
     st.session_state.show_history = True
 
-# Sidebar for toggling chat history
+# Sidebar with toggle
 with st.sidebar:
     st.header("⚙️ Settings")
-    toggle = st.button("📜 Toggle Chat History")
-    if toggle:
-        st.session_state.show_history = not st.session_state.show_history
+    st.session_state.show_history = st.checkbox("📜 Show Chat History", value=st.session_state.show_history)
 
     if st.session_state.show_history:
         st.markdown("### 📚 Chat History")
@@ -30,18 +26,18 @@ with st.sidebar:
             st.write("No messages yet!")
 
 # Main input area
-st.subheader("Ask a coding question or paste code 👇")
+st.subheader("Ask a coding question or paste some code 👇")
 user_input = st.text_input("Your prompt", key="input")
 
-# Process user input
+# If user types something
 if user_input:
-    with st.spinner("CodeMate is thinking..."):
-        response = chat_with_bot(user_input, groq_api_key, st.session_state.chat_history)
-        st.session_state.chat_history.append(("🧑 You", user_input))
-        st.session_state.chat_history.append(("🤖 CodeMate", response))
+    response = chat_with_bot(user_input)
+    st.session_state.chat_history.append(("🧑 You", user_input))
+    st.session_state.chat_history.append(("🤖 CodeMate", response))
 
-# Show recent conversation in collapsible section
+# Display recent messages
 if st.session_state.chat_history:
-    with st.expander("🧠 Recent Conversation", expanded=True):
-        for sender, msg in reversed(st.session_state.chat_history[-6:]):
-            st.markdown(f"**{sender}:** {msg}")
+    st.markdown("---")
+    st.subheader("🧠 Recent Conversation")
+    for sender, msg in reversed(st.session_state.chat_history[-6:]):
+        st.markdown(f"**{sender}:** {msg}")
