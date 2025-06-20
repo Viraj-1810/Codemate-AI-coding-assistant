@@ -1,54 +1,97 @@
-# 🤖 CodeMate: Your AI Coding Assistant
-Built by **Viraj Gupta**
+# 💻 CodeMate: Your AI Coding Assistant
 
-CodeMate is a VS Code-style AI coding assistant powered by **Groq's blazing-fast LLaMA 3 model** using **LangChain**. It can:
-
-- Answer programming questions
-- Explain and refactor code
-- Debug errors
-- Maintain multi-turn conversations with memory
-- Provide secure coding and best practice suggestions
-
-Built for developers who want fast, context-aware help without leaving their IDE!
+CodeMate is an intelligent, real-time AI Copilot designed to help developers write, understand, debug, and improve code effortlessly. Built with **Streamlit**, powered by **Groq's blazing-fast LLaMA 3**, and enhanced by **LangChain**, it supports contextual memory, markdown/code toggle, chat history, and PDF parsing.
 
 ---
 
 ## 🚀 Features
 
 ✅ **Answer Coding Questions**  
-Ask things like:
-- “How do I write a class in Python?”
-- “What is the difference between list and tuple?”
+> _"What does this function do?"_  
+> _"What's the difference between an interface and an abstract class?"_
+
+✅ **Chat with Memory**  
+Multi-turn conversations with context awareness:  
+> _You: How do I create a list in Python?_  
+> _You: Now convert it to a set._
 
 ✅ **Explain Code Snippets**  
-Paste code and get a step-by-step explanation in plain English.
+Paste any code and get a line-by-line explanation.
 
-✅ **Refactor & Optimize Code**  
-Ask:
-- “Can you make this more readable?”
-- “Optimize this for performance.”
+✅ **Suggest Code Improvements**  
+Get optimized, readable, and cleaner versions with rationale.
 
-✅ **Debug Faulty Code**  
-Ask:
-- “Why is this not working?”
-- “Fix the bug in this snippet.”
+✅ **Debug Logic Errors**  
+Paste buggy code and get suggestions and fixes.
 
-✅ **Enforce Best Practices**  
-Get recommendations for:
-- Clean code
-- Pythonic syntax
-- Secure web coding practices
+✅ **Suggest Best Practices**  
+Follows Pythonic conventions and secure coding principles.
 
-✅ **Chat Memory Support**  
-- Maintains context across multiple messages.
-- Supports follow-up questions in natural conversation.
+✅ **Markdown/Code Toggle Input**  
+Choose between markdown notes or code-based prompts.
 
-✅ **Groq + LangChain + Streamlit**  
-- LLaMA 3 8B for superior code reasoning  
-- Groq for lightning-fast responses  
-- LangChain for chaining logic & memory  
-- Streamlit for clean, responsive UI  
+✅ **PDF Parsing (Code from Docs)**  
+Upload `.pdf` files — extract and discuss code from them.
+
+✅ **Collapsible Chat History**  
+Easily navigate past messages with toggle support in sidebar.
+
+✅ **Export Chat History (Coming Soon)**  
+One-click download of your session as `.txt` or `.md`.
 
 ---
 
+## 🛠️ Tech Stack
 
+- [Streamlit](https://streamlit.io/)
+- [LangChain](https://www.langchain.com/)
+- [Groq API](https://console.groq.com/)
+- [LLaMA 3 8B](https://huggingface.co/meta-llama)
+- [PyMuPDF](https://pymupdf.readthedocs.io/en/latest/) for PDF parsing
+
+---
+
+## 📁 Project Structure
+
+codemate/
+│
+├── app.py # Main Streamlit app
+├── requirements.txt # All dependencies
+│
+├── chains/ # Contains LangChain logic
+│ ├── chat_chain.py
+│
+├── utils/ # Memory and helper utilities
+│ └── memory_utils.py
+│
+└── assets/ # (Optional) For icons or UI enhancements
+
+yaml
+Copy
+Edit
+
+---
+
+## 📦 Setup Instructions
+
+```bash
+# 1. Clone the repo
+git clone https://github.com/your-username/codemate.git
+cd codemate
+
+# 2. (Optional) Create a virtual environment
+python -m venv venv
+venv\Scripts\activate    # On Windows
+
+# 3. Install dependencies
+pip install -r requirements.txt
+
+# 4. Add your Groq API key
+# Inside app.py or use environment variable
+os.environ["GROQ_API_KEY"] = "your-groq-api-key"
+
+# 5. Run the app
+streamlit run app.py
+👤 Developed by
+Viraj Gupta
+Final Year Student, Jaypee University of Engineering and Technology
