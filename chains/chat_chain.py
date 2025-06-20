@@ -20,6 +20,13 @@ chatbot = ConversationChain(
     verbose=True
 )
 
-def chat_with_bot(user_input: str) -> str:
-    return chatbot.run(user_input)
+def chat_with_bot(user_input, mode="explain"):
+    prompts = {
+        "explain": f"Explain the following code:\n{user_input}",
+        "debug": f"Find and fix bugs in the following code:\n{user_input}",
+        "refactor": f"Refactor and optimize this code:\n{user_input}",
+        "best_practices": f"Suggest best practices for the following code:\n{user_input}"
+    }
+    prompt = prompts.get(mode, user_input)
+    return chatbot.run(prompt)
 
