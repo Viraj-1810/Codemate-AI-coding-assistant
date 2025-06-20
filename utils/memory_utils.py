@@ -1,18 +1,14 @@
-import os
-import pickle
+# utils/memory_utils.py
+
 from langchain.memory import ConversationBufferMemory
 
-MEMORY_FILE = "memory/session_memory.pkl"
+# Global memory instance to persist across user messages
+memory = ConversationBufferMemory(return_messages=True)
 
-def save_memory(memory: ConversationBufferMemory):
-    os.makedirs("memory", exist_ok=True)
-    with open(MEMORY_FILE, "wb") as f:
-        pickle.dump(memory, f)
+def get_memory():
+    """Returns the shared conversation memory."""
+    return memory
 
-def load_memory() -> ConversationBufferMemory:
-    if os.path.exists(MEMORY_FILE):
-        with open(MEMORY_FILE, "rb") as f:
-            return pickle.load(f)
-    else:
-        return ConversationBufferMemory(return_messages=True)
-
+def clear_memory():
+    """Clears the conversation memory."""
+    memory.clear()
