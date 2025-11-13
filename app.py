@@ -1,58 +1,83 @@
+import os
 import streamlit as st
-import tiktoken
-from chains.chat_chain import chat_with_bot
-from utils.memory_utils import clear_memory
+from dotenv import load_dotenv
+from langchain.document_loaders import PyPDFLoader
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain.vectorstores import FAISS
+from langchain.embeddings import HuggingFaceEmbeddings
+from langchain.chains import ConversationalRetrievalChain
+from langchain.memory import ConversationBufferMemory
+from langchain.llms import Groq
+from chat_db import init_db, save_chat, fetch_chat_history
 
-# Set up page config
-st.set_page_config(page_title="CodeMate Copilot", page_icon="🤖", layout="wide")
-st.title("💻 CodeMate: Your AI Coding Assistant")
+# --- Load environment variables ---
+load_dotenv()
+GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 
-# Token counter function using tiktoken (compatible with LLaMA/GPT tokenization)
-def count_tokens(text, model="gpt2"):
-    enc = tiktoken.get_encoding(model)
-    return len(enc.encode(text))
+# --- Initialize Streamlit ---
+st.set_page_config(page_title="AI Chatbot using GROQ", page_icon="🤖", layout="wide")
+st.title("🤖 AI Chatbot using GROQ")
+st.write("Upload your PDF and chat intelligently with it!")
 
-# Session state init
-if "chat_history" not in st.session_state:
-    st.session_state.chat_history = []
-if "markdown_mode" not in st.session_state:
-    st.session_state.markdown_mode = True
+# --- Initialize SQLite database ---
+init_db()
 
-# Sidebar controls
+# --- Sidebar: Chat history display ---
 with st.sidebar:
-    st.header("📜 Chat History")
-    for idx, (sender, msg) in enumerate(st.session_state.chat_history):
-        with st.expander(f"{sender}", expanded=False):
-            st.markdown(msg)
+    st.header("💬 Recent Chats")
+    chat_history = fetch_chat_history(limit=10)
+    if chat_history:
+        for chat in chat_history:
+            st.markdown(f"🧑 **You:** {chat[0]}")
+            st.markdown(f"🤖 **Bot:** {chat[1]}")
+            st.caption(f"⏱️ {chat[2]}")
+            st.markdown("---")
+    else:
+        st.info("No chats saved yet.")
 
-    st.divider()
-    st.checkbox("📝 Use Markdown Input", key="markdown_mode")
-    if st.button("🧹 Clear Memory"):
-        clear_memory()
-        st.session_state.chat_history = []
-        st.success("Chat history cleared.")
+# --- PDF Upload ---
+uploaded_file = st.file_uploader("📄 Upload a PDF file", type="pdf")
 
-# Main input area
-st.subheader("Ask a coding question, upload a PDF, or paste code 👇")
-user_input = st.text_area("Your prompt:", key="user_input", height=200)
+if uploaded_file:
+    with st.spinner("Processing PDF..."):
+        loader = PyPDFLoader(uploaded_file)
+        docs = loader.load()
 
-# Token usage display
-if user_input:
-    token_count = count_tokens(user_input)
-    st.caption(f"🧮 Estimated tokens: {token_count}")
+        text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
+        chunks = text_splitter.split_documents(docs)
 
-# Handle response
-if st.button("🚀 Run") and user_input:
-    response = chat_with_bot(user_input)
-    st.session_state.chat_history.append(("🧑 You", user_input))
-    st.session_state.chat_history.append(("🤖 CodeMate", response))
+        embeddings = HuggingFaceEmbeddings()
+        vectorstore = FAISS.from_documents(chunks, embeddings)
 
-# Show last 6 messages
-if st.session_state.chat_history:
-    st.markdown("---")
-    st.subheader("🧠 Recent Conversation")
-    for sender, msg in reversed(st.session_state.chat_history[-6:]):
-        if st.session_state.markdown_mode and sender == "🤖 CodeMate":
-            st.markdown(f"**{sender}:**\n{msg}", unsafe_allow_html=True)
-        else:
-            st.text(f"{sender}: {msg}")
+        memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
+        retriever = vectorstore.as_retriever(search_kwargs={"k": 3})
+
+        llm = Groq(
+            model="llama3-70b-8192",
+            groq_api_key=GROQ_API_KEY,
+            temperature=0.4
+        )
+
+        qa_chain = ConversationalRetrievalChain.from_llm(
+            llm=llm,
+            retriever=retriever,
+            memory=memory
+        )
+
+        st.success("✅ PDF processed! You can start chatting below.")
+
+        # --- Chat Interface ---
+        user_input = st.text_input("Ask a question about the PDF:")
+
+        if user_input:
+            with st.spinner("Generating response..."):
+                result = qa_chain({"question": user_input})
+                response = result["answer"]
+                st.markdown(f"**🤖 Answer:** {response}")
+
+                # --- Save chat to SQLite ---
+                save_chat(user_input, response)
+
+else:
+    st.info("👆 Please upload a PDF to start chatting.")
+
